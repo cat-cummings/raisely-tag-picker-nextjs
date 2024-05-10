@@ -13,7 +13,6 @@ export const UserTags = ({ ...user }: User) => {
   const [userTags, setUserTags] = useState<string[]>([])
   const [showInput, setShowInput] = React.useState<boolean>(false)
   const [showAdd, setShowAdd] = React.useState<boolean>(false)
-  console.log(showInput, showAdd)
 
   // Only show tags that are not already assigned to the user
   const filteredTags = allTags?.filter((tag) => !userTags.includes(tag.uuid))
@@ -88,7 +87,7 @@ export const UserTags = ({ ...user }: User) => {
     setShowAdd(false)
   }
 
-  if (userTags.length === 0) return null
+  if (userTags.length === 0) return null // 
 
   return (
     <div className='m-2 p-4 outline w-1/3 outline-slate-300' onMouseEnter={() => setShowAdd(true)} onMouseLeave={() => mouseOutHandler()}>
