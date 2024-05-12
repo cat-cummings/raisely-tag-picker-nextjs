@@ -14,36 +14,23 @@ export const UserTags = ({ ...user }: User) => {
   const [showInput, setShowInput] = React.useState<boolean>(false)
   const [showAdd, setShowAdd] = React.useState<boolean>(false)
 
-  // Only show tags that are not already assigned to the user
+  // Only show tags in select that are not already assigned to the user
   const filteredTags = allTags?.filter((tag) => !userTags.includes(tag.uuid))
   const tagOptions = filteredTags?.map((tag) => ({ value: tag.uuid, label: tag.title, color: tag.color }))
   const selectRef = useRef(null)
 
-  // fetch tags on mount
+  // fetch tags on mount, and if user changes
   useEffect(() => {
     const fetchTagsData = async () => {
       try {
-        const tags = await fetchTags();
+        const [tags, userTagsData] = await Promise.all([fetchTags(), fetchUserTags(user.uuid)]);
         setAllTags(tags);
+        setUserTags(userTagsData);
       } catch (error) {
         console.error('Error fetching tags:', error);
       }
     };
     fetchTagsData();
-  }, []);
-
-  // fetch user tags on mount and if user changes
-  useEffect(() => {
-    const fetchUserTagsData = async () => {
-      try {
-        const userTagsData = await fetchUserTags(user.uuid);
-        setUserTags(userTagsData);
-      } catch (error) {
-        console.error('Error fetching user tags:', error);
-      }
-    };
-
-    fetchUserTagsData();
   }, [user.uuid]);
 
   const userTagObjects = useMemo(() => {
@@ -107,7 +94,7 @@ export const UserTags = ({ ...user }: User) => {
   };
 
   return (
-    <div className='m-2 p-4 outline w-1/3 outline-slate-300'
+    <div className='m-2 p-4 outline sm:w-1/2 md:w-1/3 w-2/3 outline-slate-300'
       onMouseEnter={() => setShowAdd(true)}
       onMouseLeave={() => mouseOutHandler()}
       onKeyDown={handleKeyDown}
